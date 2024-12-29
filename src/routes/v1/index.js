@@ -2,7 +2,7 @@ const express = require('express');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
-const musicRoute = require('./music.route');
+const songRoute = require('./song.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -17,8 +17,8 @@ const defaultRoutes = [
     route: userRoute,
   },
   {
-    path: '/music',
-    route: musicRoute,
+    path: '/song',
+    route: songRoute,
   },
 ];
 

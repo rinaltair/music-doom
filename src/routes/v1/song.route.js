@@ -5,11 +5,11 @@ const f = multer({ preservePath: true });
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const userValidation = require('../../validations/user.validation');
-const musicController = require('../../controllers/music.controller');
+const songController = require('../../controllers/song.controller');
 
 const router = express.Router();
 
 router.route('/')
-  .get(musicController.downloadMusic)
-  .post(f.single('music'), musicController.upploadMusic)
+  .get(songController.downloadTrack)
+  .post(f.single('song'), songController.upploadTrack)
 module.exports = router;

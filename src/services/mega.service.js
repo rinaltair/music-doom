@@ -4,7 +4,7 @@ const config = require('../config/config');
 
 let result;
 let rootdir;
-let musicdir;
+let songdir;
 let picdir;
 
 const mega = new Storage({
@@ -24,7 +24,7 @@ const megaInit = async () => {
 
     // Setting directory for cloud storage
     rootdir = await directory(mega.root, config.mega.directory);
-    musicdir = await directory(rootdir, 'music');
+    songdir = await directory(rootdir, 'song');
     picdir = await directory(rootdir, 'picture');
   } catch (error) {
     Logger.error('Failed to initialize Mega storage:', error);
@@ -49,16 +49,17 @@ const uploadFile = async (type, file) => {
   // TODO:
   //  1. arrange the directory
   //  2. return the directory to the controller
-
   if (!mega.ready) {
     await megaInit();
   }
 
   let stream;
-  if (type === 'music') {
-    stream = musicdir.upload({ name: file.originalname, size: file.size }, file.buffer);
+  const filename = file.originalname;
+
+  if (type === 'song') {
+    stream = songdir.upload({ name: filename, size: file.size }, file.buffer);
   } else {
-    stream = picdir.upload({ name: file.originalname, size: file.size }, file.buffer);
+    stream = picdir.upload({ name: filename, size: file.size }, file.buffer);
   }
 
   stream.once('progress', (info) => Logger.info(`Uploaded ${info.bytesUploaded}, bytes of ${info.bytesTotal}`));
@@ -68,7 +69,7 @@ const uploadFile = async (type, file) => {
   });
   stream.once('error', (error) => Logger.error('There was an error:', error));
   await stream.complete;
-  return result;
+  return { result, filename };
 };
 
 megaInit();
