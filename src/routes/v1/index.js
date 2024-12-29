@@ -16,6 +16,10 @@ const defaultRoutes = [
     path: '/users',
     route: userRoute,
   },
+  {
+    path: '/music',
+    route: musicRoute,
+  },
 ];
 
 const devRoutes = [
