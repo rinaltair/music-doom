@@ -25,6 +25,7 @@ const envVarsSchema = Joi.object()
     EMAIL_FROM: Joi.string().description('the from field in the emails sent by the app'),
     MEGA_EMAIL: Joi.string().required().description('email for credentials MEGA'),
     MEGA_PASSWORD: Joi.string().required().description('password for credentials MEGA'),
+    MEGA_DIRECTORY: Joi.string().required().description('directory for cloud MEGA'),
   })
   .unknown();
 
@@ -66,5 +67,6 @@ module.exports = {
   mega: {
     email: envVars.MEGA_EMAIL,
     password: envVars.MEGA_PASSWORD,
+    directory: envVars.MEGA_DIRECTORY,
   },
 };
