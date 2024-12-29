@@ -55,7 +55,7 @@ const uploadFile = async (type, file) => {
   }
 
   let stream;
-  if (type === 'muisc') {
+  if (type === 'music') {
     stream = musicdir.upload({ name: file.originalname, size: file.size }, file.buffer);
   } else {
     stream = picdir.upload({ name: file.originalname, size: file.size }, file.buffer);
