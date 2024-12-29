@@ -3,11 +3,12 @@ const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
 const { authService, userService, tokenService, emailService, megaService } = require('../services');
 
-const getMusic = catchAsync(async (req, res) => {
+const downloadMusic = catchAsync(async (req, res) => {
   res.status(200).json({ message: 'aaaaa uploaded successfully' });
 });
 
-const postMusic = catchAsync(async (req, res) => {
+const upploadMusic = catchAsync(async (req, res) => {
+  // TODO : save it to the database
   const music = req.file;
   const result = await megaService.uploadMusic(music);
   if (!result) {
@@ -17,6 +18,6 @@ const postMusic = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  getMusic,
-  postMusic,
+  downloadMusic,
+  upploadMusic,
 };

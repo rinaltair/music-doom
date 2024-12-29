@@ -10,6 +10,6 @@ const musicController = require('../../controllers/music.controller');
 const router = express.Router();
 
 router.route('/')
-  .get(musicController.getMusic)
-  .post(f.single('music'), musicController.postMusic)
+  .get(musicController.downloadMusic)
+  .post(f.single('music'), musicController.upploadMusic)
 module.exports = router;
