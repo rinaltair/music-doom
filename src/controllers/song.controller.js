@@ -9,7 +9,7 @@ const downloadSong = catchAsync(async (req, res) => {
 });
 
 const uploadSong = catchAsync(async (req, res) => {
-  const song = new Song(req.body);
+  let song = new Song(req.body);
   const file = req.file;
 
   // Upload file to cloud storage
@@ -24,7 +24,7 @@ const uploadSong = catchAsync(async (req, res) => {
   song.size = file.size;
   await song.save();
 
-  res.status(httpStatus.OK).send({ succes: true, message: result });
+  res.status(httpStatus.OK).send({ succes: true, message: result.message });
 });
 
 module.exports = {
