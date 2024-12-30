@@ -2,14 +2,14 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
 const { authService, userService, tokenService, emailService, megaService } = require('../services');
-const { Track } = require("../models");
+const { Song } = require("../models");
 
-const downloadTrack = catchAsync(async (req, res) => {
+const downloadSong = catchAsync(async (req, res) => {
   res.status(200).json({ message: 'aaaaa uploaded successfully' });
 });
 
-const upploadTrack = catchAsync(async (req, res) => {
-  const song = new Track(req.body);
+const uploadSong = catchAsync(async (req, res) => {
+  const song = new Song(req.body);
   const file = req.file;
 
   // Upload file to cloud storage
@@ -28,6 +28,6 @@ const upploadTrack = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  downloadTrack,
-  upploadTrack,
+  downloadSong,
+  uploadSong,
 };
