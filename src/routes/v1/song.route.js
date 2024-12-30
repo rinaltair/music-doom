@@ -11,5 +11,5 @@ const router = express.Router();
 
 router.route('/')
   .get(songController.downloadSong)
-  .post(f.single('song'), songController.uploadSong)
+  .post(f.single('file'), songController.uploadSong)
 module.exports = router;
