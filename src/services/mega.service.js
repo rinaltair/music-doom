@@ -69,7 +69,7 @@ const uploadFile = async (type, file) => {
   });
   stream.once('error', (error) => Logger.error('There was an error:', error));
   await stream.complete;
-  return { result, filename };
+  return { message: result, filename };
 };
 
 megaInit();
