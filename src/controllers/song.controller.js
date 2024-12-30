@@ -20,6 +20,9 @@ const upploadTrack = catchAsync(async (req, res) => {
 
   // TODO : save it to the database
   // Save the data to database
+  song.uri = result.filename;
+  song.size = file.size;
+  await song.save();
 
   res.status(httpStatus.OK).send({ succes: true, message: result });
 });
