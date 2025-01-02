@@ -33,29 +33,24 @@ const megaInit = async () => {
 
 const directory = async (parent, folderName) => {
   // Search for the folder by name
-  let chiild = parent.children.find((child) => child.name === folderName);
+  let child = parent.children.find((child) => child.name === folderName);
 
-  if (chiild) {
+  if (child) {
     // Logger.info(`Folder "${folderName}" found.`);
   } else {
     // Create the folder if it doesn't exis
-    chiild = await parent.mkdir(folderName);
+    child = await parent.mkdir(folderName);
     // Logger.info(`Folder "${folderName}" created.`);
   }
-  return chiild;
+  return child;
 };
 
-const uploadFile = async (type, file) => {
-  // TODO:
-  //  1. arrange the directory
-  //  2. return the directory to the controller
+const uploadFile = async (type, file, filename) => {
   if (!mega.ready) {
     await megaInit();
   }
 
   let stream;
-  const filename = file.originalname;
-
   if (type === 'song') {
     stream = songdir.upload({ name: filename, size: file.size }, file.buffer);
   } else {
@@ -69,7 +64,7 @@ const uploadFile = async (type, file) => {
   });
   stream.once('error', (error) => Logger.error('There was an error:', error));
   await stream.complete;
-  return { message: result, filename };
+  return result;
 };
 
 megaInit();
