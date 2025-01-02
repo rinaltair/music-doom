@@ -1,5 +1,7 @@
 const multer = require('multer');
 const path = require('path');
+const httpStatus = require('http-status');
+const ApiError = require('../utils/ApiError');
 
 const upload = multer({
   preservePath: true,
@@ -10,7 +12,7 @@ const upload = multer({
     if (allowedExtensions.includes(extension)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Only audio files (.mp3) are allowed!'), false);
+      cb(new ApiError(httpStatus.UNSUPPORTED_MEDIA_TYPE, 'Invalid file type. Only audio files (.mp3) are allowed!'));
     }
   },
 });
