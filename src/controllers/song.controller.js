@@ -12,7 +12,6 @@ const downloadSong = catchAsync(async (req, res) => {
 });
 
 const uploadSong = catchAsync(async (req, res) => {
-  // TODO: add validation
   const song = new Song(req.body);
   const { file } = req;
   const result = await songService.uploadSong(song, file);
