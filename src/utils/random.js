@@ -1,7 +1,7 @@
-const uniqueFileName = require('unique-filename');
+const { v4: uuid } = require('uuid');
 
-const randFileName = (filename) => {
-  const random = uniqueFileName(filename);
+const randFileName = () => {
+  const random = uuid();
   return random;
 };
 
