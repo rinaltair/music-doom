@@ -9,7 +9,7 @@ const songController = require('../../controllers/song.controller');
 
 const router = express.Router();
 
-router.route('/')
-  .get(songController.downloadSong)
-  .post(f.single('file'), songController.uploadSong)
+router.route('/download').post(songController.downloadSong);
+router.route('/upload').post(f.single('file'), songController.uploadSong);
+
 module.exports = router;
