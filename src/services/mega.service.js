@@ -3,72 +3,60 @@ const Logger = require('../config/logger');
 const config = require('../config/config');
 
 let result;
-let rootdir;
-let songdir;
-let picdir;
+let rootDirectory;
+let songDirectory;
+let pictDirectory;
 
-const mega = new Storage({
+const megaStorage = new Storage({
   email: config.mega.email,
   password: config.mega.password,
 });
 
-const megaInit = async () => {
-  try {
-    // Log success when storage is ready
-    mega.once('ready', () => Logger.info('Connected to Mega.nz'));
-    // Log errors
-    mega.once('error', (err) => Logger.error('Error connecting to Mega.nz:', err));
+const getDirectory = async (parentDirectory, folderName) => {
+  // Search for the folder by name
+  const existingDirectory = parentDirectory.children.find((child) => child.name === folderName);
+  return existingDirectory || (await parentDirectory.mkdir(folderName));
+};
 
-    // Wait until the storage is ready
-    await mega.ready;
+const initializeMegaStorage = async () => {
+  try {
+    megaStorage.once('ready', () => Logger.info('Connected to Mega.nz'));
+    await megaStorage.ready;
 
     // Setting directory for cloud storage
-    rootdir = await directory(mega.root, config.mega.directory);
-    songdir = await directory(rootdir, 'song');
-    picdir = await directory(rootdir, 'picture');
+    rootDirectory = await getDirectory(megaStorage.root, config.mega.directory);
+    songDirectory = await getDirectory(rootDirectory, 'song');
+    pictDirectory = await getDirectory(rootDirectory, 'picture');
   } catch (error) {
     Logger.error('Failed to initialize Mega storage:', error);
   }
 };
 
-const directory = async (parent, folderName) => {
-  // Search for the folder by name
-  let child = parent.children.find((child) => child.name === folderName);
+const uploadFile = async (fileType, file, filename) => {
+  !megaStorage.ready ? await initializeMegaStorage() : null;
 
-  if (child) {
-    // Logger.info(`Folder "${folderName}" found.`);
-  } else {
-    // Create the folder if it doesn't exis
-    child = await parent.mkdir(folderName);
-    // Logger.info(`Folder "${folderName}" created.`);
-  }
-  return child;
-};
+  const uploadStream =
+    fileType === 'song'
+      ? songDirectory.upload({ name: filename, size: file.size }, file.buffer)
+      : pictDirectory.upload({ name: filename, size: file.size }, file.buffer);
 
-const uploadFile = async (type, file, filename) => {
-  if (!mega.ready) {
-    await megaInit();
-  }
-
-  let stream;
-  if (type === 'song') {
-    stream = songdir.upload({ name: filename, size: file.size }, file.buffer);
-  } else {
-    stream = picdir.upload({ name: filename, size: file.size }, file.buffer);
-  }
-
-  stream.once('progress', (info) => Logger.info(`Uploaded ${info.bytesUploaded}, bytes of ${info.bytesTotal}`));
-  stream.once('complete', () => {
+  uploadStream.once('progress', (info) => {
+    Logger.info(`Uploaded ${info.bytesUploaded}, bytes of ${info.bytesTotal}`);
+  });
+  uploadStream.once('complete', () => {
     result = 'File uploaded successfully';
     Logger.info(result);
   });
-  stream.once('error', (error) => Logger.error('There was an error:', error));
-  await stream.complete;
+  uploadStream.once('error', (error) => {
+    Logger.error('There was an error:', error);
+  });
+
+  await uploadStream.complete;
   return result;
 };
 
-megaInit();
+initializeMegaStorage();
 module.exports = {
-  mega,
+  megaStorage,
   uploadFile,
 };
