@@ -55,8 +55,20 @@ const uploadFile = async (fileType, file, filename) => {
   return result;
 };
 
+const downloadFile = async (fileType, uri) => {
+  !megaStorage.ready ? await initializeMegaStorage() : null;
+
+  const fileDirectory = fileType === 'song' ? songDirectory.find(uri) : pictDirectory.find(uri);
+  if (!fileDirectory) {
+    throw new Error('File not found');
+  }
+  const downloadStream = await fileDirectory.downloadBuffer();
+  return downloadStream;
+};
+
 initializeMegaStorage();
 module.exports = {
   megaStorage,
   uploadFile,
+  downloadFile,
 };

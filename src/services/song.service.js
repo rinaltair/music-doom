@@ -2,7 +2,21 @@ const httpStatus = require('http-status');
 const { Song } = require('../models');
 const { megaService } = require('./index');
 const ApiError = require('../utils/ApiError');
+const Logger = require('../config/logger');
 const random = require('../utils/random');
+
+const downloadSong = async (id) => {
+  const song = await Song.findById(id).catch((error) => {
+    Logger.error(error);
+    throw new ApiError(httpStatus.NOT_FOUND, 'Song not found');
+  });
+  const file = megaService.downloadFile('song', `${song.uri}`).catch((error) => {
+    Logger.error(error);
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'File download failed');
+  });
+
+  return file;
+};
 
 const uploadSong = async (song, file) => {
   // Upload file to cloud storage
@@ -22,4 +36,5 @@ const uploadSong = async (song, file) => {
 
 module.exports = {
   uploadSong,
+  downloadSong,
 };
