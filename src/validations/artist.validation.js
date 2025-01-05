@@ -9,4 +9,15 @@ const createArtist = {
   }),
 };
 
-module.exports = { createArtist };
+const updateArtist = {
+  body: Joi.object().keys({
+    name: Joi.string().required(),
+    bio: Joi.string().required(),
+    // albums: Joi.objectId()
+  }),
+  params: Joi.object().keys({
+    id: Joi.required().custom(objectId),
+  }),
+};
+
+module.exports = { createArtist, updateArtist };

@@ -10,4 +10,6 @@ const router = express.Router();
 
 router.route('/create').post(multer.p.single('profile'), validate(artistValidation.createArtist), artistController.createArtist);
 
+router.route('/:id/update').post(multer.p.single('profile'), validate(artistValidation.updateArtist), artistController.updateArtist);
+
 module.exports = router;
