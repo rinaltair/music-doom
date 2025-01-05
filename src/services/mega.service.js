@@ -1,6 +1,8 @@
 const { Storage } = require('megajs');
 const Logger = require('../config/logger');
 const config = require('../config/config');
+const ApiError = require('../utils/ApiError');
+const httpStatus = require('http-status');
 
 let result;
 let rootDirectory;
@@ -33,8 +35,10 @@ const initializeMegaStorage = async () => {
 };
 
 const uploadFile = async (fileType, file, filename) => {
+  // Initialize the storage
   !megaStorage.ready ? await initializeMegaStorage() : null;
 
+  // Choose storage directory
   const uploadStream =
     fileType === 'song'
       ? songDirectory.upload({ name: filename, size: file.size }, file.buffer)
@@ -49,8 +53,10 @@ const uploadFile = async (fileType, file, filename) => {
   });
   uploadStream.once('error', (error) => {
     Logger.error('There was an error:', error);
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'File upload failed');
   });
 
+  // Upload the file
   await uploadStream.complete;
   return result;
 };
@@ -60,10 +66,23 @@ const downloadFile = async (fileType, uri) => {
 
   const fileDirectory = fileType === 'song' ? songDirectory.find(uri) : pictDirectory.find(uri);
   if (!fileDirectory) {
-    throw new Error('File not found');
+    throw new ApiError('File not found');
   }
   const downloadStream = await fileDirectory.downloadBuffer();
   return downloadStream;
+};
+
+const deleteFile = async (fileType, uri) => {
+  !megaStorage.ready ? await initializeMegaStorage() : null;
+
+  const fileDirectory = fileType === 'song' ? songDirectory.find(uri) : pictDirectory.find(uri);
+  if (!fileDirectory) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'File not found');
+  }
+  await fileDirectory.delete().catch((error) => {
+    Logger.error(error);
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'File delete failed');
+  });
 };
 
 initializeMegaStorage();
@@ -71,4 +90,5 @@ module.exports = {
   megaStorage,
   uploadFile,
   downloadFile,
+  deleteFile,
 };
