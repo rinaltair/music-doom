@@ -12,7 +12,13 @@ const updateArtist = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).json({ success: true, message: 'Artist updated successfully', data: artist });
 });
 
+const getArtistById = catchAsync(async (req, res) => {
+  const artist = await artistService.getArtistById(req.params.id);
+  res.status(httpStatus.OK).json({ success: true, message: 'Artist fetched successfully', data: artist });
+});
+
 module.exports = {
   createArtist,
   updateArtist,
+  getArtistById,
 };

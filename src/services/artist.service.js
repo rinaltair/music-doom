@@ -22,8 +22,6 @@ const createArtistWithProfile = async (artistData, profileFile) => {
   }
 };
 
-
-
 const updateArtistWithProfile = async (artistId, updateData, profileFile) => {
   // check if artist exists
   const artist = await baseService.getById(artistId);
@@ -55,8 +53,18 @@ const updateArtistWithProfile = async (artistId, updateData, profileFile) => {
   }
 };
 
+const getArtistById = async (artistId) => {
+  const artist = await baseService.getById(artistId);
+  if (!artist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Artist not found');
+  }
+  return artist;
+};
+
+
 module.exports = {
   ...baseService,
   createArtistWithProfile,
   updateArtistWithProfile,
+  getArtistById,
 };

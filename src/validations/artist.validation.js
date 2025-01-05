@@ -20,4 +20,14 @@ const updateArtist = {
   }),
 };
 
-module.exports = { createArtist, updateArtist };
+const getArtistByID = {
+  params: Joi.object().keys({
+    id: Joi.required().custom(objectId),
+  }),
+};
+
+module.exports = {
+  createArtist,
+  updateArtist,
+  getArtistByID,
+};
