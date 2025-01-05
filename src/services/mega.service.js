@@ -1,10 +1,9 @@
 const { Storage } = require('megajs');
+const httpStatus = require('http-status');
 const Logger = require('../config/logger');
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
-const httpStatus = require('http-status');
 
-let result;
 let rootDirectory;
 let songDirectory;
 let pictDirectory;
@@ -39,26 +38,29 @@ const uploadFile = async (fileType, file, filename) => {
   !megaStorage.ready ? await initializeMegaStorage() : null;
 
   // Choose storage directory
-  const uploadStream =
-    fileType === 'song'
-      ? songDirectory.upload({ name: filename, size: file.size }, file.buffer)
-      : pictDirectory.upload({ name: filename, size: file.size }, file.buffer);
+  try {
+    const uploadStream =
+      fileType === 'song'
+        ? songDirectory.upload({ name: filename, size: file.size }, file.buffer)
+        : pictDirectory.upload({ name: filename, size: file.size }, file.buffer);
 
-  uploadStream.once('progress', (info) => {
-    Logger.info(`Uploaded ${info.bytesUploaded}, bytes of ${info.bytesTotal}`);
-  });
-  uploadStream.once('complete', () => {
-    result = 'File uploaded successfully';
-    Logger.info(result);
-  });
-  uploadStream.once('error', (error) => {
+    // uploadStream.once('progress', (info) => {
+    //   Logger.info(`Uploaded ${info.bytesUploaded}, bytes of ${info.bytesTotal}`);
+    // });
+    // uploadStream.once('complete', () => {
+    //   Logger.info(result);
+    // });
+    // uploadStream.once('error', (error) => {
+    //   Logger.error('There was an error:', error);
+    //   throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'File upload failed');
+    // });
+
+    // Upload the file
+    await uploadStream.complete;
+  } catch (error) {
     Logger.error('There was an error:', error);
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'File upload failed');
-  });
-
-  // Upload the file
-  await uploadStream.complete;
-  return result;
+  }
 };
 
 const downloadFile = async (fileType, uri) => {
