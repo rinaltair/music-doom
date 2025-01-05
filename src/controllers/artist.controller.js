@@ -17,8 +17,14 @@ const getArtistById = catchAsync(async (req, res) => {
   res.status(httpStatus.OK).json({ success: true, message: 'Artist fetched successfully', data: artist });
 });
 
+const deleteArtist = catchAsync(async (req, res) => {
+  const artist = await artistService.deleteArtistById(req.params.id);
+  res.status(httpStatus.OK).json({ success: true, message: 'Artist deleted successfully', data: artist });
+});
+
 module.exports = {
   createArtist,
   updateArtist,
   getArtistById,
+  deleteArtist,
 };

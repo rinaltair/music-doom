@@ -16,5 +16,6 @@ router.route('/:id/').get(multer.p.none(), validate(artistValidation.getArtistBy
 router
   .route('/:id/update')
   .post(multer.p.single('profile'), validate(artistValidation.updateArtist), artistController.updateArtist);
+router.route('/:id/delete').post(multer.p.none(), validate(artistValidation.getArtistByID), artistController.deleteArtist);
 
 module.exports = router;

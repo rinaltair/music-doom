@@ -14,6 +14,11 @@ const crud = (model) => ({
     const object = await model.findById(id);
     return object;
   },
+
+  async deleteById(id) {
+    const object = await model.findByIdAndDelete(id);
+    return object;
+  },
 });
 
 module.exports = crud;

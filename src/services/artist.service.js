@@ -61,10 +61,20 @@ const getArtistById = async (artistId) => {
   return artist;
 };
 
+const deleteArtistById = async (artistId) => {
+  const artist = await baseService.getById(artistId);
+  if (!artist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Artist not found');
+  }
+  await baseService.deleteById(artistId);
+  return artist;
+};
+
 
 module.exports = {
   ...baseService,
   createArtistWithProfile,
   updateArtistWithProfile,
   getArtistById,
+  deleteArtistById,
 };
