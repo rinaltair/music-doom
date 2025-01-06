@@ -15,6 +15,11 @@ const crud = (model) => ({
     return object;
   },
 
+  async getAll() {
+    const objects = await model.find();
+    return objects;
+  },
+
   async deleteById(id) {
     const object = await model.findByIdAndDelete(id);
     return object;

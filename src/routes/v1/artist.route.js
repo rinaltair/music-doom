@@ -8,6 +8,8 @@ const { artistController } = require('../../controllers');
 
 const router = express.Router();
 
+router.route('/').get(multer.p.none(), artistController.getArtists);
+
 router
   .route('/create')
   .post(multer.p.single('profile'), validate(artistValidation.createArtist), artistController.createArtist);
