@@ -11,7 +11,7 @@ const profile = multer.p.single('profile');
 
 const router = express.Router();
 
-router.get('/', noFile, artistController.getArtists);
+router.get('/', noFile, artistController.getAllArtist);
 router.post('/create', profile, validate(artistValidation.createArtist), artistController.createArtist);
 
 router.get('/:id/', noFile, validate(artistValidation.getArtistByID), artistController.getArtistById);
