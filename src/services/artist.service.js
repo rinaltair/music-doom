@@ -9,19 +9,6 @@ const ApiError = require('../utils/ApiError');
 
 const baseService = crud(Artist);
 
-const createArtistWithProfile = async (artistData, profileFile) => {
-  const filename = random.randomFilename(profileFile);
-  const profileUri = await megaService.uploadFile('picture', profileFile, filename);
-
-  try {
-    const artist = await baseService.create({ ...artistData, profileUri });
-    return artist;
-  } catch (error) {
-    await megaService.deleteFile('picture', filename);
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to create artist');
-  }
-};
-
 const updateArtistWithProfile = async (artistId, updateData, profileFile) => {
   // check if artist exists
   const artist = await baseService.getById(artistId);
@@ -42,7 +29,7 @@ const updateArtistWithProfile = async (artistId, updateData, profileFile) => {
 
     // Delete the old file
     if (filename && artist.profileUri) {
-      await megaService.deleteFile('picture', artist.profileUri)
+      await megaService.deleteFile('picture', artist.profileUri);
     }
     return updatedArtist;
   } catch (error) {
@@ -70,10 +57,8 @@ const deleteArtistById = async (artistId) => {
   return artist;
 };
 
-
 module.exports = {
   ...baseService,
-  createArtistWithProfile,
   updateArtistWithProfile,
   getArtistById,
   deleteArtistById,

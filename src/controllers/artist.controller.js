@@ -3,7 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const { artistService } = require('../services');
 
 const createArtist = catchAsync(async (req, res) => {
-  const artist = await artistService.createArtistWithProfile(req.body, req.file);
+  const artist = await artistService.createwithPhoto(req.body, req.file, 'profileUri');
   res.status(httpStatus.CREATED).json({ success: true, message: 'Artist created successfully', data: artist });
 });
 
