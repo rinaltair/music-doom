@@ -17,6 +17,7 @@ const defaultRoutes = [
     path: '/users',
     route: userRoute,
   },
+  // My Routes
   {
     path: '/song',
     route: songRoute,
