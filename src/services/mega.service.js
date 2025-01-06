@@ -44,17 +44,6 @@ const uploadFile = async (fileType, file, filename) => {
         ? songDirectory.upload({ name: filename, size: file.size }, file.buffer)
         : pictDirectory.upload({ name: filename, size: file.size }, file.buffer);
 
-    // uploadStream.once('progress', (info) => {
-    //   Logger.info(`Uploaded ${info.bytesUploaded}, bytes of ${info.bytesTotal}`);
-    // });
-    // uploadStream.once('complete', () => {
-    //   Logger.info(result);
-    // });
-    // uploadStream.once('error', (error) => {
-    //   Logger.error('There was an error:', error);
-    //   throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'File upload failed');
-    // });
-
     // Upload the file
     await uploadStream.complete;
   } catch (error) {
