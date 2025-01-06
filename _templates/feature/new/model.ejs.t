@@ -27,4 +27,3 @@ const <%= name %> = mongoose.model('<%= name %>', <%= name.toLowerCase() %>Schem
 
 module.exports = <%= name %>;
 
-
