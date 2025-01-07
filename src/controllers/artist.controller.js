@@ -8,7 +8,7 @@ const createArtist = catchAsync(async (req, res) => {
 });
 
 const updateArtist = catchAsync(async (req, res) => {
-  const artist = await artistService.updateArtistWithProfile(req.params.id, req.body, req.file);
+  const artist = await artistService.updateByIdWithPhoto(req.params.id, req.body, req.file, 'profileUri');
   res.status(httpStatus.OK).json({ success: true, message: 'Artist updated successfully', data: artist });
 });
 
@@ -18,7 +18,7 @@ const getArtistById = catchAsync(async (req, res) => {
 });
 
 const getAllArtist = catchAsync(async (req, res) => {
-  const artist = await artistService.getAll;
+  const artist = await artistService.getAll();
   res.status(httpStatus.OK).json({ success: true, message: 'Artist fetched successfully', data: artist });
 });
 
