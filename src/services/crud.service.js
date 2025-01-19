@@ -1,3 +1,4 @@
+const httpStatus = require('http-status');
 const random = require('../utils/random');
 const megaService = require('./mega.service');
 const ApiError = require('../utils/ApiError');
@@ -26,6 +27,7 @@ const crud = (model) => ({
       // Create and save the object
       let object = new model({ ...data, [propertyFile]: filename });
       object = await object.save();
+
       return object;
     } catch (error) {
       await megaService.deleteFile('picture', filename);
@@ -41,7 +43,20 @@ const crud = (model) => ({
    * @throws {ApiError} - If the object cannot be found or updated
    */
   async updateById(id, data) {
-    const object = await model.findOneAndUpdate({ _id: id }, data, { new: true });
+    // Get the object by Id
+    const object = await model.findById(id).catch((error) => {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Unable to find ${model.modelName}`);
+    });
+
+    // If the object is not found, throw an error
+    if (!object) {
+      throw new ApiError(httpStatus.NOT_FOUND, `${model.modelName} not found`);
+    }
+
+    // Update the object
+    Object.assign(object, data);
+    await object.save();
+
     return object;
   },
 
@@ -55,13 +70,11 @@ const crud = (model) => ({
    * @throws {ApiError} - If the object cannot be found or updated
    */
   async updateByIdWithPhoto(id, updateBody, file, photoProperty) {
-    const object = await model.findOneAndUpdate({ _id: id }, updateBody, { new: true }).catch((error) => {
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Unable to find ${model.modelName}`);
-    });
+    const object = this.updateById(id, updateBody);
 
     if (file) {
-      const newPhotoName = random.randomFilename(file);
       try {
+        const newPhotoName = random.randomFilename(file);
         await megaService.uploadFile('picture', file, newPhotoName);
         const updated = await model.findOneAndUpdate({ _id: id }, { [photoProperty]: newPhotoName });
         await megaService.deleteFile('picture', object[photoProperty]);
@@ -83,6 +96,9 @@ const crud = (model) => ({
    */
   async getById(id) {
     const object = await model.findById(id);
+    if (!object) {
+      throw new ApiError(httpStatus.NOT_FOUND, `${model.modelName} not found`);
+    }
     return object;
   },
 
@@ -103,6 +119,9 @@ const crud = (model) => ({
    */
   async deleteById(id) {
     const object = await model.findByIdAndDelete(id);
+    if (!object) {
+      throw new ApiError(httpStatus.NOT_FOUND, `${model.modelName} not found`);
+    }
     return object;
   },
 });
