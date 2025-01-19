@@ -13,7 +13,7 @@ const updateArtist = catchAsync(async (req, res) => {
 });
 
 const getArtistById = catchAsync(async (req, res) => {
-  const artist = await artistService.getArtistById(req.params.id);
+  const artist = await artistService.getById(req.params.id);
   res.status(httpStatus.OK).json({ success: true, message: 'Artist fetched successfully', data: artist });
 });
 
@@ -23,7 +23,7 @@ const getAllArtist = catchAsync(async (req, res) => {
 });
 
 const deleteArtist = catchAsync(async (req, res) => {
-  const artist = await artistService.deleteArtistById(req.params.id);
+  const artist = await artistService.deleteById(req.params.id);
   res.status(httpStatus.OK).json({ success: true, message: 'Artist deleted successfully', data: artist });
 });
 
