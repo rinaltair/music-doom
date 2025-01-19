@@ -11,6 +11,41 @@ const crud = (model) => ({
   },
 
   /**
+   * Get an object by id
+   * @param {ObjectId} id - The id of the object to get
+   * @returns {Promise<Object>} - The object
+   * @throws {ApiError} - If the object cannot be found
+   */
+  async getById(id) {
+    const object = await model.findById(id);
+    if (!object) {
+      throw new ApiError(httpStatus.NOT_FOUND, `${model.modelName} not found`);
+    }
+    return object;
+  },
+
+  /**
+   * Get all objects
+   * @returns {Promise<Object[]>} - All objects
+   */
+  async getAll() {
+    const objects = await model.find();
+    return objects;
+  },
+
+  /**
+   * Delete an object by id
+   * @param {ObjectId} id - The id of the object to delete
+   * @returns {Promise<Object>} - The deleted object
+   * @throws {ApiError} - If the object cannot be found
+   */
+  async deleteById(id) {
+    const object = await this.getById(id);
+    object.deleteOne();
+    return object;
+  },
+
+  /**
    * Create an object with a new photo
    * @param {Object} data - The data to create the object with
    * @param {Object} file - The photo file to upload
@@ -86,43 +121,6 @@ const crud = (model) => ({
     } else {
       return object;
     }
-  },
-
-  /**
-   * Get an object by id
-   * @param {ObjectId} id - The id of the object to get
-   * @returns {Promise<Object>} - The object
-   * @throws {ApiError} - If the object cannot be found
-   */
-  async getById(id) {
-    const object = await model.findById(id);
-    if (!object) {
-      throw new ApiError(httpStatus.NOT_FOUND, `${model.modelName} not found`);
-    }
-    return object;
-  },
-
-  /**
-   * Get all objects
-   * @returns {Promise<Object[]>} - All objects
-   */
-  async getAll() {
-    const objects = await model.find();
-    return objects;
-  },
-
-  /**
-   * Delete an object by id
-   * @param {ObjectId} id - The id of the object to delete
-   * @returns {Promise<Object>} - The deleted object
-   * @throws {ApiError} - If the object cannot be found
-   */
-  async deleteById(id) {
-    const object = await model.findByIdAndDelete(id);
-    if (!object) {
-      throw new ApiError(httpStatus.NOT_FOUND, `${model.modelName} not found`);
-    }
-    return object;
   },
 });
 
