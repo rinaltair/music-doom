@@ -4,6 +4,7 @@ const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const songRoute = require('./song.route');
 const artistRoute = require('./artist.route');
+const albumRoute = require('./album.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -18,6 +19,10 @@ const defaultRoutes = [
     route: userRoute,
   },
   // My Routes
+  {
+    path: '/album',
+    route: albumRoute,
+  },
   {
     path: '/song',
     route: songRoute,
