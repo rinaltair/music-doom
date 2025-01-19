@@ -79,9 +79,7 @@ const crud = (model) => ({
    */
   async updateById(id, data) {
     // Get the object by Id
-    const object = await model.findById(id).catch((error) => {
-      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Unable to find ${model.modelName}`);
-    });
+    const object = await this.getById(id);
 
     // If the object is not found, throw an error
     if (!object) {
@@ -91,6 +89,9 @@ const crud = (model) => ({
     // Update the object
     Object.assign(object, data);
     await object.save();
+
+    // this one cannot return the updated object
+    // const abc = await object.updateOne({ $set: data });
 
     return object;
   },
@@ -105,13 +106,14 @@ const crud = (model) => ({
    * @throws {ApiError} - If the object cannot be found or updated
    */
   async updateByIdWithPhoto(id, updateBody, file, photoProperty) {
-    const object = this.updateById(id, updateBody);
+    const object = await this.updateById(id, updateBody);
 
     if (file) {
       try {
         const newPhotoName = random.randomFilename(file);
+      try {
         await megaService.uploadFile('picture', file, newPhotoName);
-        const updated = await model.findOneAndUpdate({ _id: id }, { [photoProperty]: newPhotoName });
+        const updated = await this.updateById(id, { [photoProperty]: newPhotoName });
         await megaService.deleteFile('picture', object[photoProperty]);
         return updated;
       } catch (error) {
