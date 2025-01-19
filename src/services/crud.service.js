@@ -109,8 +109,7 @@ const crud = (model) => ({
     const object = await this.updateById(id, updateBody);
 
     if (file) {
-      try {
-        const newPhotoName = random.randomFilename(file);
+      const newPhotoName = random.randomFilename(file);
       try {
         await megaService.uploadFile('picture', file, newPhotoName);
         const updated = await this.updateById(id, { [photoProperty]: newPhotoName });
